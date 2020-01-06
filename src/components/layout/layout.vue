@@ -3,7 +3,11 @@
     <a-layout theme="light" v-if="navMode == 'homePage'">
       <a-layout-header class="header">
         <div class="logo"></div>
-        <div class="login" @click="loginHandler">登录/注册</div>
+        <div class="login" @click="loginHandler" v-if="user == undefined">登录/注册</div>
+        <div class="login" v-else>
+          <a-icon type="user" />
+          {{ user.username }}
+        </div>
         <topmenu :data="topData" />
       </a-layout-header>
       <router-view></router-view>
@@ -121,7 +125,8 @@ export default {
       formLayout: "horizontal",
       loginForm: this.$form.createForm(this, { name: "login" }),
       registerForm: this.$form.createForm(this, { name: "register" }),
-      hasErrors
+      hasErrors,
+      user: undefined
     };
   },
   mounted() {
@@ -147,9 +152,66 @@ export default {
     submitHandler(event) {
       console.log("submit handler...");
       event.preventDefault();
+      const self = this;
       this.loginForm.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
+
+          //登录模块，向后台发送请求登录系统
+          self.$axios
+              .post(
+                  "api/user/login",
+                  JSON.stringify({
+                    username: values.username,
+                    password: values.password
+                  })
+              )
+              .then(function(response) {
+                
+                const data = response.data
+                if(data.code == 200) {
+                  console.log('登录success')
+                  self.$message
+                      .loading('正在验证中...', 2.5)
+                      .then(function() {
+                        self.$message.success(data.content, 2.5)
+                      })
+                      .then(function() {
+                        self.$axios
+                            .get("api/user/getCurrentUser")
+                            .then(function(rep) {
+                              self.user = rep.data
+                              console.log('获取当前用户success', rep.data);
+                            })
+                            .catch(function(error) {
+                              console.log('error', error);
+                            })
+                      })
+                      .then(function() {
+                        self.navMode = 'homePage'
+                      })
+                }
+                else if(data.code == 407){
+                  console.log('登录失败，密码错误')
+                  self.$message
+                      .loading('正在验证中...', 2.5)
+                      .then(function() {
+                        self.$message.error(data.content, 2.5)
+                      })
+                }
+                else {
+                  console.log('用户不存在！')
+                  self.$message
+                      .loading('正在验证中...', 2.5)
+                      .then(function() {
+                        self.$message.error(data.content, 2.5)
+                      })
+                }
+              })
+              .catch(function(error) {
+                console.log("登录fail", error);
+              })
+
         } else {
           console.log("error", err);
         }
@@ -157,7 +219,7 @@ export default {
     },
     usernameError(form) {
       const { getFieldError, isFieldTouched } = form;
-      return isFieldTouched("username") && getFieldError("userNusernameame");
+      return isFieldTouched("username") && getFieldError("username");
     },
     // Only show error after a field is touched.
     passwordError(form) {
@@ -173,29 +235,37 @@ export default {
           console.log("Received values of form: ", values);
 
           //注册模块，向后台发送请求注册用户....
-           self.$axios
-              .post("api/user/register", JSON.stringify({
+          self.$axios
+            .post(
+              "api/user/register",
+              JSON.stringify({
                 id: null,
                 username: values.username,
                 password: values.password
-              }))
-              .then(function(response) {
-                console.log('注册success', response.data)
-                self.$message.info('注册成功!')
-                self.$message.loading('正在返回登陆页面', 2.5)
-                              .then(function(){
-                                self.$message.success('Loading finished', 2.5)
-                                self.navMode = 'loginPage'
-                              })
               })
-              .catch(function(error) {
-                console.log('注册fail', error)
-              })
-          
+            )
+            .then(function(response) {
+              console.log("注册success", response.data);
+              const data = response.data;
+
+              if (data.code == 200) {
+                self.$message.info(data.content);
+                self.$message.loading("正在返回登陆页面", 2.5).then(function() {
+                  self.$message.success("Loading finished", 2.5);
+                  self.navMode = "loginPage";
+                });
+              }
+              else {
+                self.$message.info(data.content + '，用户名已存在!');
+              }
+            })
+            .catch(function(error) {
+              console.log("注册fail", error);
+            });
         } else {
           console.log("error", err);
         }
-      })
+      });
     }
   }
 };
