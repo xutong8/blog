@@ -5,8 +5,15 @@
         <div class="logo"></div>
         <div class="login" @click="loginHandler" v-if="user == undefined">登录/注册</div>
         <div class="login" v-else>
-          <a-icon type="user" />
-          {{ user.username }}
+          <a-menu mode="horizontal">
+            <a-sub-menu>
+              <span slot="title" class="submenu-title-wrapper">
+                <a-icon type="user" />
+                {{ user.username }}
+              </span>
+              <a-menu-item @click="personalCenter">个人中心</a-menu-item>
+            </a-sub-menu>
+          </a-menu>
         </div>
         <topmenu :data="topData" />
       </a-layout-header>
@@ -94,7 +101,8 @@ import {
   Tabs,
   Form,
   Input,
-  Button
+  Button,
+  Menu
 } from "ant-design-vue";
 import topmenu from "../topmenu";
 import sidemenu from "../sidemenu";
@@ -106,6 +114,7 @@ Vue.use(Carousel);
 Vue.use(Layout);
 Vue.use(List);
 Vue.use(Tabs);
+Vue.use(Menu);
 Vue.component("a-layout-header", Layout.Header);
 Vue.component("a-layout-sidebar", Layout.Sider);
 Vue.use(topmenu);
@@ -266,6 +275,10 @@ export default {
           console.log("error", err);
         }
       });
+    },
+    personalCenter() {
+      console.log('person center...')
+      this.$router.push({name: 'userPage'})
     }
   }
 };
