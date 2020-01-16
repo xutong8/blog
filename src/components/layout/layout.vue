@@ -294,7 +294,7 @@ export default {
   .header {
     background: #ffffff;
     .logo {
-      background-image: url("../../assets/blog-logo.png");
+      background-image: url("../../../public/blog-logo.png");
       background-size: cover;
       width: 120px;
       height: 64px;

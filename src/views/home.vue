@@ -11,30 +11,30 @@
         <!-- 显示content上方的图片 -->
         <div class="img-container">
           <div class="topImg">
-            <img src="../assets/topone.png" style="flex: 7" />
-            <img src="../assets/toptwo.jpg" style="flex: 3" />
+            <img src="../../public/topone.png" style="flex: 7" />
+            <img src="../../public/toptwo.jpg" style="flex: 3" />
           </div>
           <div class="bottomImg">
             <div class="bottomLeft">
               <div style="flex: 4;">
                 <a-carousel autoplay>
-                  <img src="../assets/left1.jpg" />
-                  <img src="../assets/left2.jpg" />
-                  <img src="../assets/left3.jpg" />
+                  <img src="../../public/left1.jpg" />
+                  <img src="../../public/left2.jpg" />
+                  <img src="../../public/left3.jpg" />
                 </a-carousel>
               </div>
               <div style="flex: 6; display: flex;">
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                  <img src="../assets/right1.jpg" width="773.64" height="280" />
+                  <img src="../../public/right1.jpg" width="773.64" height="280" />
                 </div>
               </div>
             </div>
             <div class="bottomRight">
               <div style="flex: 1;">
                 <a-carousel autoplay>
-                  <img src="../assets/left1.jpg" width="552.59" height="280" />
-                  <img src="../assets/left2.jpg" width="552.59" height="280" />
-                  <img src="../assets/left3.jpg" width="552.59" height="280" />
+                  <img src="../../public/left1.jpg" width="552.59" height="280" />
+                  <img src="../../public/left2.jpg" width="552.59" height="280" />
+                  <img src="../../public/left3.jpg" width="552.59" height="280" />
                 </a-carousel>
               </div>
             </div>
